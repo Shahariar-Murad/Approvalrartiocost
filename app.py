@@ -363,7 +363,7 @@ with tabs[7]:
     base_processing_cost = bridgerpay_cost(unique_orders)
     retry_processing_cost = max(total_processing_cost - base_processing_cost, 0)
 
-    three_ds_cost = three_ds_count * 0.008
+    three_ds_cost = three_ds_count * 0.0008
     total_cost_with_3ds = total_processing_cost + three_ds_cost
 
     approved_orders = attempted.groupby("merchant_order_id")["status_group"].apply(lambda x: "Approved" in x.values)
@@ -372,13 +372,13 @@ with tabs[7]:
     )
 
     retry_sales_df = attempted.groupby("merchant_order_id").agg({
-        "attempt_number":"max",
+        "attempt_no":"max",
         "amount":"max",
         "status_group":lambda x:list(x)
     }).reset_index()
 
     retry_sales_df["approved_after_retry"] = retry_sales_df.apply(
-        lambda r: (r["attempt_number"] > 1) and ("Approved" in r["status_group"]), axis=1
+        lambda r: (r["attempt_no"] > 1) and ("Approved" in r["status_group"]), axis=1
     )
 
     retry_generated_sales = retry_sales_df.loc[
